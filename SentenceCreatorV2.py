@@ -4,10 +4,11 @@ import tkinter as tk
 import tkinter.font as TkFont
 import random
 
+
 # comments - name, assignment, estimate, actual
-#Damon Beam - Library Implementations - Expected time 3 hours - Actual time: 5 hours
-#I was looking to do a different thing when I first started the project, but realized I would need to do more research. I decided on doing a GUI instead. A lot of the time taken was
-#learning how to create the GUI as well as research prior and experimenting with things. This extra time caoused me to be above my expected time.
+#Damon Beam - Library Implementations - Expected time 2 hours - Actual time: 2 hours
+#A relatively simple addition to my project, I was just looking to add the two functions. Most of the time taken was figuring out how to get the functions to work, and then trial and
+#error with the gui aspect of things. Functions work well to show subjectivity, but unfortunately did not improve the quality of the sentences.
 
 
 #Classes - WordStructure, Word, Sentence
@@ -115,61 +116,102 @@ def six_word_sentence():
     writeFile.write(Sentence.subject + Sentence.predicate + '\n')
     writeFile.close()
 
+#Creates a 5 word sentence that then filters for a subjective sentence,  prints to label sentence with subjectivity > 0.75
+def subjectiveSentence(): 
+    Sentence.subject = random.choice(dArticleList) + " " + random.choice(adjList) + " " + random.choice(nounList) + " "
+    Sentence.predicate = random.choice(verbList) + " " + random.choice(advList) + "."
+    newSentence = TextBlob(Sentence.subject + Sentence.predicate)
 
+    while newSentence.subjectivity < 0.75:
+        Sentence.subject = random.choice(dArticleList) + " " + random.choice(adjList) + " " + random.choice(nounList) + " "
+        Sentence.predicate = random.choice(verbList) + " " + random.choice(advList) + "."
+        newSentence = TextBlob(Sentence.subject + Sentence.predicate).correct()
+    else:
+        sentenceLabel.config(text=newSentence + "   Subjectivity:" + str(newSentence.subjectivity))
+
+#Creates a 5 word sentence that then filters for a objective sentence,  prints to label sentence with subjectivity < 0.25
+def objectiveSentence(): 
+    Sentence.subject = random.choice(dArticleList) + " " + random.choice(adjList) + " " + random.choice(nounList) + " "
+    Sentence.predicate = random.choice(verbList) + " " + random.choice(advList) + "."
+    newSentence = TextBlob(Sentence.subject + Sentence.predicate)
+
+    while newSentence.subjectivity > 0.25:
+        Sentence.subject = random.choice(dArticleList) + " " + random.choice(adjList) + " " + random.choice(nounList) + " "
+        Sentence.predicate = random.choice(verbList) + " " + random.choice(advList) + "."
+        newSentence = TextBlob(Sentence.subject + Sentence.predicate).correct()
+    else:
+        sentenceLabel.config(text=newSentence + "   Subjectivity:" + str(newSentence.subjectivity))
+   
 #Tkinter Window and Values - Main Menu
 
 window = tk.Tk()
 greeting = tk.Label(text="Sentence Creator - Main Menu")
 greeting.pack()
-font = TkFont.Font(size=24)
+font = TkFont.Font(size=36)
 
 label = tk.Label(text= """
     1 = Create a 3 word sentence (Article Noun Verb)
     2 = Create a 4 word sentence (Article Adjective Noun Verb)
     3 = Create a 5 word sentence (Article Adjective Noun Verb Adverb)
     4 = Create a 6 word sentence (Article Noun Verb Preposition Article Noun)
-    5 = Exit
-    """, bg="gray", fg="white", width=100, height=5)
+    5 = Creates a Subjective 5 word sentence
+    6 = Creates a Objective 5 word sentence
+    7 = Exit
+    """, bg="gray30", fg="white", width=143, height=10)
 label.config(font=(24))
 label.pack()
 
-sentenceLabel = tk.Label(text= "", width=100, height=5, background="gray", fg="white")
+sentenceLabel = tk.Label(text= "", width=143, height=5, background="gray30", fg="white")
 sentenceLabel.config(font=(24))
 sentenceLabel.pack()
 
 button1 = tk.Button(
-    text="1", width=25, height=5, bg="gray", fg="white",)
+    text="1", width=25, height=5, bg="DarkSlateGray4", fg="white",)
 def handle_click1(event):
     three_word_sentence()
 button1.bind("<Button-1>", handle_click1)
 button1.pack(side=tk.LEFT)
 
 button2 = tk.Button(
-    text="2", width=25, height=5, bg="gray", fg="white",)
+    text="2", width=25, height=5, bg="DarkSlateGray4", fg="white",)
 def handle_click2(event):
     four_word_sentence()
 button2.bind("<Button-1>", handle_click2)
 button2.pack(side=tk.LEFT)
 
 button3 = tk.Button(
-    text="3", width=25, height=5, bg="gray", fg="white",)
+    text="3", width=25, height=5, bg="DarkSlateGray4", fg="white",)
 def handle_click3(event):
     five_word_sentence()
 button3.bind("<Button-1>", handle_click3)
 button3.pack(side=tk.LEFT)
 
 button4 = tk.Button(
-    text="4", width=25, height=5, bg="gray", fg="white",)
+    text="4", width=25, height=5, bg="DarkSlateGray4", fg="white",)
 def handle_click4(event):
     six_word_sentence()
 button4.bind("<Button-1>", handle_click4)
 button4.pack(side=tk.LEFT)
 
 button5 = tk.Button(
-    text="5", width=25, height=5, bg="gray", fg="white",)
+    text="5", width=25, height=5, bg="DarkSlateGray4", fg="white",)
 def handle_click5(event):
-    window.destroy()   
+    subjectiveSentence()
 button5.bind("<Button-1>", handle_click5)
 button5.pack(side=tk.LEFT)
+
+button6 = tk.Button(
+    text="6", width=25, height=5, bg="DarkSlateGray4", fg="white",)
+def handle_click6(event):
+    objectiveSentence()
+button6.bind("<Button-1>", handle_click6)
+button6.pack(side=tk.LEFT)
+
+button7 = tk.Button(
+    text="7", width=25, height=5, bg="DarkSlateGray4", fg="white",)
+def handle_click7(event):
+    window.destroy()   
+button7.bind("<Button-1>", handle_click7)
+button7.pack(side=tk.LEFT)
 
 window.mainloop()
